@@ -12,6 +12,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Breakfast", "Breakfast", "{D21AA745-F606-495B-B8C7-E29745CA43D5}"
 	ProjectSection(SolutionItems) = preProject
 		CreateBreakfast.http = CreateBreakfast.http
+		DeleteBreakfast.http = DeleteBreakfast.http
+		GetBreakfast.http = GetBreakfast.http
+		UpsertBreakfast.http = UpsertBreakfast.http
 	EndProjectSection
 EndProject
 Global

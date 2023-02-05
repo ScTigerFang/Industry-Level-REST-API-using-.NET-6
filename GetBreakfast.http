@@ -1,3 +1,6 @@
-@id=00000000-0000-0000-0000-000000000000
+@id=edd36221-43bb-40d7-bc7e-94470edb1358
 
-DELETE https://localhost:7032/breakfasts/{{id}}
+GET https://localhost:7032/breakfasts/{{id}}
+
+### 
+GET https://localhost:7032/Breakfasts/edd36221-43bb-40d7-bc7e-94470edb1358
