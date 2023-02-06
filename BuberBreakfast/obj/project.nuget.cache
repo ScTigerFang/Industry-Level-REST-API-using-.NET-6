@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "HkoODpwXIktHNMpgl5ST62q2d7ns5QHJ7a8S6mMXEMr/iyyNFNndGVSzhLqCd7y4YeM9EILEnk/fcFpTDzGmWQ==",
+  "dgSpecHash": "/paljEgaSpt4Ee2kl3OkMPEOI2JgxKSCl8JO7Mh/tRXJJEl2X14LafSXtyHVqZ8bjOewzzpqoK5NS4C0LRKVBw==",
   "success": true,
   "projectFilePath": "C:\\Users\\sctig\\source\\repos\\BuberBreakfast\\BuberBreakfast\\BuberBreakfast.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\sctig\\.nuget\\packages\\erroror\\1.2.1\\erroror.1.2.1.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -1,4 +1,4 @@
-@id=edd36221-43bb-40d7-bc7e-94470edb1358
+@id=56253f38-1a13-4af8-8bbe-677b9191b630
 
 GET https://localhost:7032/breakfasts/{{id}}
 
