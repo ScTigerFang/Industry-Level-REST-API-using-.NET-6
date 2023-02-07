@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BuberBreakfast.Contracts.Breakfast;
+﻿using BuberBreakfast.Contracts.Breakfast;
 using BuberBreakfast.Models;
+using BuberBreakfast.ServiceErrors;
 using BuberBreakfast.Services.Breakfasts;
 using ErrorOr;
-using BuberBreakfast.ServiceErrors;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BuberBreakfast.Controllers
 {
     [ApiController]
     //[Route("breakfasts")]//one solution
     [Route("[controller]")]
-    public class BreakfastsController : ControllerBase
+    public class BreakfastsController : ApiController
     {
         private readonly iBreakfastService _breakfastService;
 
@@ -19,8 +19,6 @@ namespace BuberBreakfast.Controllers
             _breakfastService = breakfastService;
         }
 
-        
-        public IActionResult testCreateBreakfast(CreateBreakfastRequest request) { return Ok(request); }
 
         [HttpPost]
         public IActionResult CreateBreakfast(CreateBreakfastRequest request)
@@ -60,15 +58,21 @@ namespace BuberBreakfast.Controllers
         {
             ErrorOr<Breakfast> getBreakfastResult = _breakfastService.GetBreakfast(id);
 
-            if (getBreakfastResult.IsError && getBreakfastResult.FirstError == Errors.Breakfast.NotFound)
-            {
-                return NotFound();
-            }
+            return getBreakfastResult.Match(
+                    breakfast => Ok(MapBreakfastResponse(breakfast)),
+                    errors => Problem(errors)
+                ); 
 
-            var breakfast = getBreakfastResult.Value;
-            BreakfastResponse response = MapBreakfastResponse(breakfast);
+            //if (getBreakfastResult.IsError && getBreakfastResult.FirstError == Errors.Breakfast.NotFound)
+            //{
+            //    return NotFound();
+            //}
 
-            return Ok(response);
+            //var breakfast = getBreakfastResult.Value;
+
+            //BreakfastResponse response = MapBreakfastResponse(breakfast);
+
+            //return Ok(response);
         }
 
         private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
