@@ -35,22 +35,12 @@ namespace BuberBreakfast.Controllers
                 request.Sweet
                 );
 
-            _breakfastService.CreateBreakfast( breakfast );
+            ErrorOr<Created> createdBreakfastResult = _breakfastService.CreateBreakfast(breakfast);
 
-            var response = new BreakfastResponse(
-                breakfast.Id,
-                breakfast.Name,
-                breakfast.Description,
-                breakfast.StartDateTime,
-                breakfast.EndDateTime,
-                breakfast.LastModifiedDateTime,
-                breakfast.Savory,
-                breakfast.Sweet);
 
-            return CreatedAtAction(
-                actionName: nameof(GetBreakfast),
-                routeValues: new {id = breakfast.Id },
-                value: response);
+            return createdBreakfastResult.Match(
+                created => CreatedAtGetBreakfast(breakfast),
+                errors => Problem(errors));
         }
 
         [HttpGet("{id:guid}")]
@@ -61,8 +51,8 @@ namespace BuberBreakfast.Controllers
             return getBreakfastResult.Match(
                     breakfast => Ok(MapBreakfastResponse(breakfast)),
                     errors => Problem(errors)
-                ); 
-
+                );
+            #region possible other way
             //if (getBreakfastResult.IsError && getBreakfastResult.FirstError == Errors.Breakfast.NotFound)
             //{
             //    return NotFound();
@@ -73,19 +63,7 @@ namespace BuberBreakfast.Controllers
             //BreakfastResponse response = MapBreakfastResponse(breakfast);
 
             //return Ok(response);
-        }
-
-        private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
-        {
-            return new BreakfastResponse(
-                breakfast.Id,
-                breakfast.Name,
-                breakfast.Description,
-                breakfast.StartDateTime,
-                breakfast.EndDateTime,
-                breakfast.LastModifiedDateTime,
-                breakfast.Savory,
-                breakfast.Sweet);
+            #endregion
         }
 
         [HttpPut("{id:guid}")]
@@ -102,15 +80,40 @@ namespace BuberBreakfast.Controllers
                 request.Sweet
                 );
 
-            _breakfastService.UpsertBreakfast(breakfast);
-            // Return a 201 if a new breakfast was created
-            return NoContent();
+            ErrorOr<UpsertedBreakfastResult> upsertBreakFastResult = _breakfastService.UpsertBreakfast(breakfast);
+            return upsertBreakFastResult.Match(
+                upserted => upserted.isNewlyCreated ? CreatedAtGetBreakfast(breakfast) : NoContent(),
+                errors => Problem(errors));
         }
 
         [HttpDelete("{id:guid}")]
         public IActionResult DeleteBreakfast(Guid id) {
-            _breakfastService.DeleteBreakfast(id);
-            return NoContent();
+            ErrorOr<Deleted> deleteBreakfastResults = _breakfastService.DeleteBreakfast(id);
+
+            return deleteBreakfastResults.Match(
+                deleted => NoContent(),
+                errors => Problem(errors));
+        }
+
+        private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
+        {
+            return new BreakfastResponse(
+                breakfast.Id,
+                breakfast.Name,
+                breakfast.Description,
+                breakfast.StartDateTime,
+                breakfast.EndDateTime,
+                breakfast.LastModifiedDateTime,
+                breakfast.Savory,
+                breakfast.Sweet);
+        }
+
+        private CreatedAtActionResult CreatedAtGetBreakfast(Breakfast breakfast)
+        {
+            return CreatedAtAction(
+                        actionName: nameof(GetBreakfast),
+                        routeValues: new { id = breakfast.Id },
+                        value: MapBreakfastResponse(breakfast));
         }
     }
 }

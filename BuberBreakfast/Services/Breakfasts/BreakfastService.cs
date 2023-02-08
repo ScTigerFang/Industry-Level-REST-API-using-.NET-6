@@ -9,9 +9,11 @@ namespace BuberBreakfast.Services.Breakfasts
         //Currently storing in memory, can replace with a database of some sort or internal storage
         private static readonly Dictionary<Guid, Breakfast> _breakfasts = new();
 
-        public void CreateBreakfast(Breakfast breakfast)
+        public ErrorOr<Created> CreateBreakfast(Breakfast breakfast)
         {
             _breakfasts.Add(breakfast.Id, breakfast);
+
+            return Result.Created;
         }
 
         public ErrorOr<Breakfast> GetBreakfast(Guid id)
@@ -23,13 +25,16 @@ namespace BuberBreakfast.Services.Breakfasts
             return Errors.Breakfast.NotFound;
         }
 
-        public void DeleteBreakfast(Guid id) { 
+        public ErrorOr<Deleted> DeleteBreakfast(Guid id) { 
             _breakfasts.Remove(id);
+            return Result.Deleted;
         }
 
-        public void UpsertBreakfast(Breakfast breakfast)
+        public ErrorOr<UpsertedBreakfastResult> UpsertBreakfast(Breakfast breakfast)
         {
+            var isNewlyCreated = !_breakfasts.ContainsKey(breakfast.Id);
             _breakfasts[breakfast.Id] = breakfast;
+            return new UpsertedBreakfastResult(isNewlyCreated);
         }
         
     }
